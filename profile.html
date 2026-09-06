@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Education - Profile</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.navbar {
+  background: rgba(0,0,0,0.1);
+  color: white;
+  padding: 15px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.profile-section {
+  margin-bottom: 30px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 20px;
+}
+
+.profile-section h3 {
+  color: #667eea;
+  margin-bottom: 15px;
+}
+
+.info-group {
+  margin-bottom: 15px;
+}
+
+.info-group label {
+  font-weight: bold;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.info-group p {
+  color: #333;
+  font-size: 16px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  background-color: #764ba2;
+}
+
+.btn-back {
+  width: 100%;
+  padding: 12px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-back:hover {
+  background-color: #5a6268;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <a onclick="goBack()">← Back to Dashboard</a>
+</div>
+
+<div class="container">
+  <h1>👤 My Profile</h1>
+  
+  <div class="profile-section">
+    <h3>Account Information</h3>
+    
+    <div class="info-group">
+      <label>Username:</label>
+      <p id="profile-username">-</p>
+    </div>
+    
+    <div class="info-group">
+      <label>📱 Mobile Number:</label>
+      <p id="profile-mobile">-</p>
+    </div>
+    
+    <div class="info-group">
+      <label>Full Name:</label>
+      <p id="profile-name">-</p>
+    </div>
+    
+    <div class="info-group">
+      <label>Registration Date:</label>
+      <p id="profile-date">-</p>
+    </div>
+  </div>
+  
+  <button class="btn-back" onclick="goBack()">Back to Dashboard</button>
+</div>
+
+<script>
+let currentUser = localStorage.getItem("currentUser");
+
+if(!currentUser) {
+  window.location.href = "login.html";
+}
+
+function loadProfile() {
+  let userDataStr = localStorage.getItem(currentUser);
+  
+  if(userDataStr) {
+    let userData = JSON.parse(userDataStr);
+    
+    document.getElementById("profile-username").textContent = userData.username;
+    document.getElementById("profile-mobile").textContent = userData.mobile;
+    document.getElementById("profile-name").textContent = userData.fullname;
+    document.getElementById("profile-date").textContent = userData.registrationDate;
+  } else {
+    // For pre-existing users
+    document.getElementById("profile-username").textContent = currentUser;
+    document.getElementById("profile-mobile").textContent = "Not provided";
+    document.getElementById("profile-name").textContent = currentUser.charAt(0).toUpperCase() + currentUser.slice(1);
+    document.getElementById("profile-date").textContent = new Date().toLocaleDateString();
+  }
+}
+
+function goBack() {
+  window.location.href = "dashboard.html";
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>s
