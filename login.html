@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Education - Login</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  width: 350px;
+}
+
+.container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  background-color: #764ba2;
+}
+
+.link-text {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+}
+
+.link-text a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin-bottom: 20px;
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎓 Smart Education</h1>
+  
+  <div id="error-msg" class="error"></div>
+  
+  <div class="form-group">
+    <label>Username</label>
+    <input type="text" id="username" placeholder="Enter username">
+  </div>
+  
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter password">
+  </div>
+  
+  <button class="btn" onclick="login()">Login</button>
+  
+  <div class="link-text">
+    Don't have account? <a href="register.html">Register here</a>
+  </div>
+</div>
+
+<script>
+let allUsers = {
+  "rahul": "123456",
+  "priya": "password123",
+  "amit": "amit@123",
+  "john": "john@456"
+};
+
+function login() {
+  let username = document.getElementById("username").value;
+  let password = document.getElementById("password").value;
+  let errorMsg = document.getElementById("error-msg");
+  
+  if(username === "" || password === "") {
+    errorMsg.textContent = "⚠️ Please fill all fields!";
+    errorMsg.style.display = "block";
+    return;
+  }
+  
+  // Check hardcoded users
+  if(allUsers[username] && allUsers[username] === password) {
+    errorMsg.style.display = "none";
+    alert("✅ Login Success! Welcome " + username);
+    localStorage.setItem("currentUser", username);
+    window.location.href = "dashboard.html";
+    return;
+  }
+  
+  // Check registered users
+  try {
+    let userData = JSON.parse(localStorage.getItem(username));
+    if(userData && userData.password === password) {
+      errorMsg.style.display = "none";
+      alert("✅ Login Success! Welcome " + username);
+      localStorage.setItem("currentUser", username);
+      window.location.href = "dashboard.html";
+      return;
+    }
+  } catch(e) {}
+  
+  errorMsg.textContent = "❌ Wrong username or password!";
+  errorMsg.style.display = "block";
+}
+
+document.addEventListener("keypress", function(event) {
+  if(event.key === "Enter") {
+    login();
+  }
+});
+</script>
+
+</body>
+</html>
