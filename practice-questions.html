@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Education - Practice Questions</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar h1 {
+  font-size: 24px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.btn-back {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  background-color: #5a6268;
+}
+
+.progress-bar {
+  background-color: #e9ecef;
+  height: 10px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background-color: #667eea;
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.question-box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.question-number {
+  color: #667eea;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.question-text {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.option {
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: white;
+}
+
+.option:hover {
+  border-color: #667eea;
+  background-color: #f5f5f5;
+}
+
+.option.selected {
+  border-color: #667eea;
+  background-color: #e7f3ff;
+}
+
+.option.correct {
+  border-color: #28a745;
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.option.incorrect {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.explanation {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+  display: none;
+}
+
+.explanation.show {
+  display: block;
+}
+
+.btn {
+  padding: 12px 30px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.btn:hover {
+  background-color: #764ba2;
+}
+
+.btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.score-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.score-box h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.score-value {
+  font-size: 32px;
+  color: #667eea;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <h1>✏️ Practice Questions</h1>
+  <div>
+    <a onclick="goBack()">← Back</a>
+  </div>
+</div>
+
+<div class="container">
+  <button class="btn-back" onclick="goBack()">← Back to Practice Topics</button>
+  
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress"></div>
+  </div>
+  
+  <div class="score-box">
+    <h2>Score</h2>
+    <div class="score-value" id="score-display">0/0</div>
+  </div>
+  
+  <div class="question-box" id="question-container">
+  </div>
+  
+  <div class="navigation">
+    <button class="btn" id="prev-btn" onclick="previousQuestion()">← Previous</button>
+    <button class="btn" id="submit-btn" onclick="submitAnswer()">Submit Answer</button>
+    <button class="btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<script>
+let practiceData = [
+  {
+    id: 1,
+    course: "Java Basics",
+    name: "Variables & Data Types",
+    difficulty: "Easy",
+    questions: 5,
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the correct syntax to declare an integer variable in Java?",
+        options: ["int x = 5;", "integer x = 5;", "Int x = 5;", "INT x = 5;"],
+        answer: 0,
+        explanation: "In Java, the correct keyword is 'int' (lowercase). It allocates 32 bits of memory."
+      },
+      {
+        id: 2,
+        question: "Which data type can store decimal numbers in Java?",
+        options: ["int", "double", "boolean", "String"],
+        answer: 1,
+        explanation: "The 'double' data type can store decimal numbers. Example: double pi = 3.14;"
+      },
+      {
+        id: 3,
+        question: "What is the default value of a boolean variable in Java?",
+        options: ["true", "false", "null", "0"],
+        answer: 1,
+        explanation: "The default value of a boolean variable is 'false'."
+      },
+      {
+        id: 4,
+        question: "How many bits does an 'int' data type use?",
+        options: ["8 bits", "16 bits", "32 bits", "64 bits"],
+        answer: 2,
+        explanation: "An 'int' data type uses 32 bits and can store values from -2,147,483,648 to 2,147,483,647."
+      },
+      {
+        id: 5,
+        question: "Which of the following is a valid variable name in Java?",
+        options: ["2variable", "variable-name", "variable_name", "variable name"],
+        answer: 2,
+        explanation: "Variable names can contain letters, numbers, underscores, and dollar signs. They cannot start with a number or contain spaces or hyphens."
+      }
+    ]
+  },
+  {
+    id: 2,
+    course: "Java Basics",
+    name: "Operators",
+    difficulty: "Easy",
+    questions: 5,
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the result of 10 + 5 * 2 in Java?",
+        options: ["30", "20", "25", "15"],
+        answer: 1,
+        explanation: "In Java, multiplication (*) has higher precedence than addition (+). So: 5 * 2 = 10, then 10 + 10 = 20."
+      },
+      {
+        id: 2,
+        question: "What does the % operator do?",
+        options: ["Multiply", "Divide", "Modulus (remainder)", "Percentage"],
+        answer: 2,
+        explanation: "The % operator returns the remainder of a division. Example: 10 % 3 = 1."
+      },
+      {
+        id: 3,
+        question: "What is the result of 5 == 5?",
+        options: ["5", "true", "false", "Error"],
+        answer: 1,
+        explanation: "The == operator checks equality. 5 equals 5, so the result is 'true'."
+      },
+      {
+        id: 4,
+        question: "What is the result of true && false?",
+        options: ["true", "false", "null", "Error"],
+        answer: 1,
+        explanation: "The && operator (AND) returns true only if both operands are true."
+      },
+      {
+        id: 5,
+        question: "What does the != operator check?",
+        options: ["Not equal to", "Not", "Not greater than", "Not less than"],
+        answer: 0,
+        explanation: "The != operator checks if two values are NOT equal. Example: 5 != 3 returns true."
+      }
+    ]
+  },
+  {
+    id: 3,
+    course: "Java Basics",
+    name: "Conditional Statements",
+    difficulty: "Medium",
+    questions: 4,
+    questions_list: [
+      {
+        id: 1,
+        question: "What will be printed?\nint x = 10;\nif(x > 5) { System.out.println('Yes'); } else { System.out.println('No'); }",
+        options: ["Yes", "No", "Both", "Nothing"],
+        answer: 0,
+        explanation: "x is 10, which is greater than 5. So the condition is true, and 'Yes' is printed."
+      },
+      {
+        id: 2,
+        question: "How many times will this loop execute?\nfor(int i = 0; i < 5; i++) { }",
+        options: ["4 times", "5 times", "6 times", "0 times"],
+        answer: 1,
+        explanation: "The loop runs when i = 0, 1, 2, 3, 4. Total: 5 times."
+      },
+      {
+        id: 3,
+        question: "What is the output?\nint a = 5;\nswitch(a) { case 5: System.out.println('Five'); break; case 10: System.out.println('Ten'); }",
+        options: ["Five", "Ten", "Both", "Nothing"],
+        answer: 0,
+        explanation: "a equals 5, so case 5 matches. 'Five' is printed."
+      },
+      {
+        id: 4,
+        question: "What happens without 'break' in switch?",
+        options: ["One", "Two", "One Two", "Error"],
+        answer: 2,
+        explanation: "Without 'break', execution continues to the next case (fall-through)."
+      }
+    ]
+  },
+  {
+    id: 4,
+    course: "Java Basics",
+    name: "Arrays",
+    difficulty: "Medium",
+    questions: 4,
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the correct way to declare an array?",
+        options: ["int array[5];", "int[] array = new int[5];", "array[5] int;", "int array{5};"],
+        answer: 1,
+        explanation: "In Java, arrays are declared as: type[] name = new type[size];"
+      },
+      {
+        id: 2,
+        question: "What is the index of the first element in an array?",
+        options: ["0", "1", "-1", "None"],
+        answer: 0,
+        explanation: "In Java, arrays are zero-indexed. The first element is at index 0."
+      },
+      {
+        id: 3,
+        question: "What will be printed?\nint[] arr = {1, 2, 3, 4, 5};\nSystem.out.println(arr[2]);",
+        options: ["1", "2", "3", "4"],
+        answer: 2,
+        explanation: "arr[2] refers to the element at index 2, which is the third element = 3."
+      },
+      {
+        id: 4,
+        question: "How to find the length of an array?",
+        options: ["array.size()", "array.length", "length(array)", "array.len()"],
+        answer: 1,
+        explanation: "Use the .length property to get the number of elements in an array."
+      }
+    ]
+  },
+  {
+    id: 5,
+    course: "Python Basics",
+    name: "Syntax & Variables",
+    difficulty: "Easy",
+    questions: 5,
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the correct way to declare a variable in Python?",
+        options: ["x : int = 5;", "x = 5", "int x = 5;", "var x = 5;"],
+        answer: 1,
+        explanation: "In Python, you simply use: variable_name = value."
+      },
+      {
+        id: 2,
+        question: "How do you write a comment in Python?",
+        options: ["// comment", "# comment", "/* comment */", "-- comment"],
+        answer: 1,
+        explanation: "In Python, comments start with #."
+      },
+      {
+        id: 3,
+        question: "What will be printed?\nx = 'Hello'\nprint(x.upper())",
+        options: ["hello", "HELLO", "Hello", "Error"],
+        answer: 1,
+        explanation: "The .upper() method converts a string to uppercase."
+      },
+      {
+        id: 4,
+        question: "What is the type of the variable x?\nx = 3.14",
+        options: ["int", "float", "string", "double"],
+        answer: 1,
+        explanation: "A number with a decimal point is a float data type in Python."
+      },
+      {
+        id: 5,
+        question: "How do you check the type of a variable in Python?",
+        options: ["type(x)", "gettype(x)", "x.type", "typeof(x)"],
+        answer: 0,
+        explanation: "Use the type() function to check the data type."
+      }
+    ]
+  }
+];
+
+let currentQuestionIndex = 0;
+let selectedCourse = null;
+let currentTopic = null;
+let answers = {};
+let submitted = {};
+
+function loadQuestions() {
+  let currentUser = localStorage.getItem("currentUser");
+  
+  if(!currentUser) {
+    window.location.href = "login.html";
+  }
+  
+  let selectedTopicId = localStorage.getItem("selectedPracticeTopic");
+  
+  if(!selectedTopicId) {
+    window.location.href = "practice.html";
+  }
+  
+  currentTopic = practiceData.find(t => t.id == selectedTopicId);
+  
+  displayQuestion();
+}
+
+function displayQuestion() {
+  let question = currentTopic.questions_list[currentQuestionIndex];
+  let container = document.getElementById("question-container");
+  
+  // Progress
+  let progress = ((currentQuestionIndex + 1) / currentTopic.questions_list.length) * 100;
+  document.getElementById("progress").style.width = progress + "%";
+  
+  // Score
+  let correctCount = Object.keys(answers).filter(key => answers[key] == currentTopic.questions_list[key - 1].answer).length;
+  document.getElementById("score-display").textContent = correctCount + "/" + currentTopic.questions_list.length;
+  
+  // Question
+  let html = `
+    <div class="question-number">Question ${currentQuestionIndex + 1} of ${currentTopic.questions_list.length}</div>
+    <div class="question-text">${question.question}</div>
+    <div class="options">
+  `;
+  
+  question.options.forEach((option, index) => {
+    let selected = answers[currentQuestionIndex + 1] === index;
+    let isCorrect = submitted[currentQuestionIndex + 1] && index === question.answer;
+    let isIncorrect = submitted[currentQuestionIndex + 1] && selected && index !== question.answer;
+    
+    let classNames = "option";
+    if (selected && !submitted[currentQuestionIndex + 1]) classNames += " selected";
+    if (isCorrect) classNames += " correct";
+    if (isIncorrect) classNames += " incorrect";
+    
+    html += `
+      <div class="${classNames}" onclick="selectOption(${index}, ${currentQuestionIndex})">
+        ${option}
+      </div>
+    `;
+  });
+  
+  html += `</div>`;
+  
+  if(submitted[currentQuestionIndex + 1]) {
+    html += `
+      <div class="explanation show">
+        <strong>Explanation:</strong> ${question.explanation}
+      </div>
+    `;
+  }
+  
+  container.innerHTML = html;
+  
+  // Navigation buttons
+  document.getElementById("prev-btn").disabled = currentQuestionIndex === 0;
+  document.getElementById("next-btn").disabled = currentQuestionIndex === currentTopic.questions_list.length - 1;
+  document.getElementById("submit-btn").textContent = submitted[currentQuestionIndex + 1] ? "✓ Submitted" : "Submit Answer";
+  document.getElementById("submit-btn").disabled = answers[currentQuestionIndex + 1] === undefined || submitted[currentQuestionIndex + 1];
+}
+
+function selectOption(index, questionIndex) {
+  if(!submitted[questionIndex + 1]) {
+    answers[questionIndex + 1] = index;
+    displayQuestion();
+  }
+}
+
+function submitAnswer() {
+  submitted[currentQuestionIndex + 1] = true;
+  displayQuestion();
+}
+
+function previousQuestion() {
+  if(currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    displayQuestion();
+  }
+}
+
+function nextQuestion() {
+  if(currentQuestionIndex < currentTopic.questions_list.length - 1) {
+    currentQuestionIndex++;
+    displayQuestion();
+  }
+}
+
+function goBack() {
+  window.location.href = "practice.html";
+}
+
+window.onload = loadQuestions;
+</script>
+
+</body>
+</html>

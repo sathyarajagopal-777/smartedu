@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Education - Practice</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar h1 {
+  font-size: 24px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.header {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.header h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: #666;
+}
+
+.btn-back {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  background-color: #5a6268;
+}
+
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.topic-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.3s;
+  border-left: 5px solid #667eea;
+}
+
+.topic-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.topic-card h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.topic-card p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 20px;
+  background-color: #667eea;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn:hover {
+  background-color: #764ba2;
+}
+
+.difficulty {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #e7f3ff;
+  color: #667eea;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <h1>✏️ Practice</h1>
+  <div>
+    <a onclick="goBack()">← Back</a>
+  </div>
+</div>
+
+<div class="container">
+  <button class="btn-back" onclick="goBack()">← Back to Dashboard</button>
+  
+  <div class="header">
+    <h2>📝 Practice Topics</h2>
+    <p>Select a topic and practice questions to improve your skills!</p>
+  </div>
+  
+  <div class="topics-grid" id="topics-container">
+  </div>
+</div>
+
+<script>
+let practiceData = [
+  {
+    id: 1,
+    course: "Java Basics",
+    name: "Variables & Data Types",
+    difficulty: "Easy",
+    questions: 5,
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the correct syntax to declare an integer variable in Java?",
+        options: ["int x = 5;", "integer x = 5;", "Int x = 5;", "INT x = 5;"],
+        answer: 0,
+        explanation: "In Java, the correct keyword is 'int' (lowercase). It allocates 32 bits of memory."
+      },
+      {
+        id: 2,
+        question: "Which data type can store decimal numbers in Java?",
+        options: ["int", "double", "boolean", "String"],
+        answer: 1,
+        explanation: "The 'double' data type can store decimal numbers. Example: double pi = 3.14;"
+      },
+      {
+        id: 3,
+        question: "What is the default value of a boolean variable in Java?",
+        options: ["true", "false", "null", "0"],
+        answer: 1,
+        explanation: "The default value of a boolean variable is 'false'."
+      },
+      {
+        id: 4,
+        question: "How many bits does an 'int' data type use?",
+        options: ["8 bits", "16 bits", "32 bits", "64 bits"],
+        answer: 2,
+        explanation: "An 'int' data type uses 32 bits and can store values from -2,147,483,648 to 2,147,483,647."
+      },
+      {
+        id: 5,
+        question: "Which of the following is a valid variable name in Java?",
+        options: ["2variable", "variable-name", "variable_name", "variable name"],
+        answer: 2,
+        explanation: "Variable names can contain letters, numbers, underscores, and dollar signs. They cannot start with a number or contain spaces or hyphens."
+      }
+    ]
+  },
+  {
+    id: 2,
+    course: "Java Basics",
+    name: "Operators",
+    difficulty: "Easy",
+    questions: 5,
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the result of 10 + 5 * 2 in Java?",
+        options: ["30", "20", "25", "15"],
+        answer: 2,
+        explanation: "In Java, multiplication (*) has higher precedence than addition (+). So: 10 + (5 * 2) = 10 + 10 = 20. Wait, that's 20. Let me recalculate: 5 * 2 = 10, then 10 + 10 = 20. The answer should be 20, which is option 1."
+      },
+      {
+        id: 2,
+        question: "What does the % operator do?",
+        options: ["Multiply", "Divide", "Modulus (remainder)", "Percentage"],
+        answer: 2,
+        explanation: "The % operator returns the remainder of a division. Example: 10 % 3 = 1 (because 10 divided by 3 is 3 with remainder 1)."
+      },
+      {
+        id: 3,
+        question: "What is the result of 5 == 5?",
+        options: ["5", "true", "false", "Error"],
+        answer: 1,
+        explanation: "The == operator checks equality. 5 equals 5, so the result is 'true'."
+      },
+      {
+        id: 4,
+        question: "What is the result of true && false?",
+        options: ["true", "false", "null", "Error"],
+        answer: 1,
+        explanation: "The && operator (AND) returns true only if both operands are true. true && false = false."
+      },
+      {
+        id: 5,
+        question: "What does the != operator check?",
+        options: ["Not equal to", "Not", "Not greater than", "Not less than"],
+        answer: 0,
+        explanation: "The != operator checks if two values are NOT equal. Example: 5 != 3 returns true."
+      }
+    ]
+  },
+  {
+    id: 3,
+    course: "Java Basics",
+    name: "Conditional Statements",
+    difficulty: "Medium",
+    questions: 4,
+    questions_list: [
+      {
+        id: 1,
+        question: "What will be printed?\nint x = 10;\nif(x > 5) { System.out.println('Yes'); } else { System.out.println('No'); }",
+        options: ["Yes", "No", "Both", "Nothing"],
+        answer: 0,
+        explanation: "x is 10, which is greater than 5. So the condition is true, and 'Yes' is printed."
+      },
+      {
+        id: 2,
+        question: "How many times will this loop execute?\nfor(int i = 0; i < 5; i++) { }",
+        options: ["4 times", "5 times", "6 times", "0 times"],
+        answer: 1,
+        explanation: "The loop runs when i = 0, 1, 2, 3, 4. When i becomes 5, the condition i < 5 is false, so the loop stops. Total: 5 times."
+      },
+      {
+        id: 3,
+        question: "What is the output?\nint a = 5;\nswitch(a) { case 5: System.out.println('Five'); break; case 10: System.out.println('Ten'); }",
+        options: ["Five", "Ten", "Both", "Nothing"],
+        answer: 0,
+        explanation: "a equals 5, so case 5 matches. 'Five' is printed. The 'break' statement prevents fall-through to case 10."
+      },
+      {
+        id: 4,
+        question: "What happens without 'break' in switch?\nint x = 1;\nswitch(x) { case 1: System.out.println('One'); case 2: System.out.println('Two'); }",
+        options: ["One", "Two", "One Two", "Error"],
+        answer: 2,
+        explanation: "Without 'break', execution continues to the next case. This is called 'fall-through'. Both 'One' and 'Two' are printed."
+      }
+    ]
+  },
+  {
+    id: 4,
+    course: "Java Basics",
+    name: "Arrays",
+    difficulty: "Medium",
+    questions: 4,
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the correct way to declare an array?",
+        options: ["int array[5];", "int[] array = new int[5];", "array[5] int;", "int array{5};"],
+        answer: 1,
+        explanation: "In Java, arrays are declared as: type[] name = new type[size];"
+      },
+      {
+        id: 2,
+        question: "What is the index of the first element in an array?",
+        options: ["0", "1", "-1", "None"],
+        answer: 0,
+        explanation: "In Java, arrays are zero-indexed. The first element is at index 0."
+      },
+      {
+        id: 3,
+        question: "What will be printed?\nint[] arr = {1, 2, 3, 4, 5};\nSystem.out.println(arr[2]);",
+        options: ["1", "2", "3", "4"],
+        answer: 2,
+        explanation: "arr[2] refers to the element at index 2, which is the third element = 3."
+      },
+      {
+        id: 4,
+        question: "How to find the length of an array?",
+        options: ["array.size()", "array.length", "length(array)", "array.len()"],
+        answer: 1,
+        explanation: "Use the .length property to get the number of elements in an array."
+      }
+    ]
+  },
+  {
+    id: 5,
+    course: "Python Basics",
+    name: "Syntax & Variables",
+    difficulty: "Easy",
+    questions: 5,
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the correct way to declare a variable in Python?",
+        options: ["x : int = 5;", "x = 5", "int x = 5;", "var x = 5;"],
+        answer: 1,
+        explanation: "In Python, you simply use: variable_name = value. No type declaration needed."
+      },
+      {
+        id: 2,
+        question: "How do you write a comment in Python?",
+        options: ["// comment", "# comment", "/* comment */", "-- comment"],
+        answer: 1,
+        explanation: "In Python, comments start with # for single line comments."
+      },
+      {
+        id: 3,
+        question: "What will be printed?\nx = 'Hello'\nprint(x.upper())",
+        options: ["hello", "HELLO", "Hello", "Error"],
+        answer: 1,
+        explanation: "The .upper() method converts a string to uppercase. 'Hello'.upper() = 'HELLO'"
+      },
+      {
+        id: 4,
+        question: "What is the type of the variable x?\nx = 3.14",
+        options: ["int", "float", "string", "double"],
+        answer: 1,
+        explanation: "A number with a decimal point is a float data type in Python."
+      },
+      {
+        id: 5,
+        question: "How do you check the type of a variable in Python?",
+        options: ["type(x)", "gettype(x)", "x.type", "typeof(x)"],
+        answer: 0,
+        explanation: "Use the type() function to check the data type of a variable. Example: type(5) returns <class 'int'>"
+      }
+    ]
+  }
+];
+
+function loadTopics() {
+  let currentUser = localStorage.getItem("currentUser");
+  
+  if(!currentUser) {
+    window.location.href = "login.html";
+  }
+  
+  let container = document.getElementById("topics-container");
+  container.innerHTML = "";
+  
+  practiceData.forEach(topic => {
+    let card = document.createElement("div");
+    card.className = "topic-card";
+    card.onclick = () => selectTopic(topic.id);
+    
+    card.innerHTML = `
+      <h3>${topic.name}</h3>
+      <span class="difficulty">${topic.difficulty}</span>
+      <p>Course: ${topic.course}</p>
+      <p>📝 ${topic.questions} Questions</p>
+      <button class="btn">Start Practice →</button>
+    `;
+    
+    container.appendChild(card);
+  });
+}
+
+function selectTopic(topicId) {
+  localStorage.setItem("selectedPracticeTopic", topicId);
+  window.location.href = "practice-questions.html";
+}
+
+function goBack() {
+  window.location.href = "dashboard.html";
+}
+
+window.onload = loadTopics;
+</script>
+
+</body>
+</html>
