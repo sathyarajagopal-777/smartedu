@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Education - Quiz Questions</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar h1 {
+  font-size: 24px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.progress-bar {
+  background-color: #e9ecef;
+  height: 10px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background-color: #667eea;
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.score-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.score-box h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.score-value {
+  font-size: 28px;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.question-box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.question-number {
+  color: #667eea;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.question-text {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.option {
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: white;
+}
+
+.option:hover {
+  border-color: #667eea;
+  background-color: #f5f5f5;
+}
+
+.option.selected {
+  border-color: #667eea;
+  background-color: #e7f3ff;
+}
+
+.option.correct {
+  border-color: #28a745;
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.option.incorrect {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.btn {
+  padding: 12px 30px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.btn:hover {
+  background-color: #764ba2;
+}
+
+.btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.btn-back {
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  display: inline-block;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  background-color: #5a6268;
+}
+
+.results-box {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  display: none;
+}
+
+.results-box.show {
+  display: block;
+}
+
+.results-box h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.final-score {
+  font-size: 48px;
+  color: #667eea;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.result-message {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.pass {
+  color: #28a745;
+}
+
+.fail {
+  color: #dc3545;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <h1>📝 Quiz</h1>
+  <div>
+    <a onclick="goBack()">← Back</a>
+  </div>
+</div>
+
+<div class="container">
+  <button class="btn-back" onclick="goBack()">← Back to Quiz List</button>
+  
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress"></div>
+  </div>
+  
+  <div class="score-box">
+    <h2>Score</h2>
+    <div class="score-value" id="score-display">0/10</div>
+  </div>
+  
+  <div class="question-box" id="question-container">
+    Loading...
+  </div>
+  
+  <div class="results-box" id="results-container">
+    <h2>Quiz Completed! 🎉</h2>
+    <div class="final-score" id="final-score">0/10</div>
+    <div class="result-message">
+      <span id="result-text">Loading...</span>
+    </div>
+    <button class="btn" onclick="retakeQuiz()">Retake Quiz</button>
+    <button class="btn" onclick="goBack()">Back to Quiz List</button>
+  </div>
+  
+  <div class="navigation" id="navigation">
+    <button class="btn" id="prev-btn" onclick="previousQuestion()">← Previous</button>
+    <button class="btn" id="submit-btn" onclick="submitAnswer()">Submit Answer</button>
+    <button class="btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<script>
+let quizzesData = [
+  {
+    id: 1,
+    title: "Java Basics Quiz",
+    questions_list: [
+      {
+        id: 1,
+        question: "What is the correct syntax to declare an integer variable in Java?",
+        options: ["int x = 5;", "integer x = 5;", "Int x = 5;", "INT x = 5;"],
+        answer: 0
+      },
+      {
+        id: 2,
+        question: "Which data type can store decimal numbers in Java?",
+        options: ["int", "double", "boolean", "String"],
+        answer: 1
+      },
+      {
+        id: 3,
+        question: "What is the default value of a boolean variable in Java?",
+        options: ["true", "false", "null", "0"],
+        answer: 1
+      },
+      {
+        id: 4,
+        question: "How many bits does an 'int' data type use?",
+        options: ["8 bits", "16 bits", "32 bits", "64 bits"],
+        answer: 2
+      },
+      {
+        id: 5,
+        question: "Which of the following is a valid variable name in Java?",
+        options: ["2variable", "variable-name", "variable_name", "variable name"],
+        answer: 2
+      },
+      {
+        id: 6,
+        question: "What is the result of 10 + 5 * 2 in Java?",
+        options: ["30", "20", "25", "15"],
+        answer: 1
+      },
+      {
+        id: 7,
+        question: "What does the % operator do?",
+        options: ["Multiply", "Divide", "Modulus (remainder)", "Percentage"],
+        answer: 2
+      },
+      {
+        id: 8,
+        question: "What is the result of 5 == 5?",
+        options: ["5", "true", "false", "Error"],
+        answer: 1
+      },
+      {
+        id: 9,
+        question: "What is the result of true && false?",
+        options: ["true", "false", "null", "Error"],
+        answer: 1
+      },
+      {
+        id: 10,
+        question: "What does the != operator check?",
+        options: ["Not equal to", "Not", "Not greater than", "Not less than"],
+        answer: 0
+      }
+    ]
+  }
+];
+
+let currentQuestionIndex = 0;
+let currentQuiz = null;
+let answers = {};
+let submitted = {};
+let quizCompleted = false;
+
+function loadQuiz() {
+  let currentUser = localStorage.getItem("currentUser");
+  
+  if(!currentUser) {
+    window.location.href = "login.html";
+  }
+  
+  let selectedQuizId = localStorage.getItem("selectedQuiz");
+  
+  if(!selectedQuizId) {
+    window.location.href = "quiz.html";
+  }
+  
+  currentQuiz = quizzesData.find(q => q.id == selectedQuizId);
+  
+  displayQuestion();
+}
+
+function displayQuestion() {
+  if(quizCompleted) {
+    return;
+  }
+  
+  let question = currentQuiz.questions_list[currentQuestionIndex];
+  let container = document.getElementById("question-container");
+  
+  // Progress
+  let progress = ((currentQuestionIndex + 1) / currentQuiz.questions_list.length) * 100;
+  document.getElementById("progress").style.width = progress + "%";
+  
+  // Score
+  let correctCount = 0;
+  for(let i = 0; i < currentQuiz.questions_list.length; i++) {
+    if(submitted[i + 1] && answers[i + 1] == currentQuiz.questions_list[i].answer) {
+      correctCount++;
+    }
+  }
+  document.getElementById("score-display").textContent = correctCount + "/" + currentQuiz.questions_list.length;
+  
+  // Question
+  let html = `
+    <div class="question-number">Question ${currentQuestionIndex + 1} of ${currentQuiz.questions_list.length}</div>
+    <div class="question-text">${question.question}</div>
+    <div class="options">
+  `;
+  
+  question.options.forEach((option, index) => {
+    let selected = answers[currentQuestionIndex + 1] === index;
+    let isCorrect = submitted[currentQuestionIndex + 1] && index === question.answer;
+    let isIncorrect = submitted[currentQuestionIndex + 1] && selected && index !== question.answer;
+    
+    let classNames = "option";
+    if (selected && !submitted[currentQuestionIndex + 1]) classNames += " selected";
+    if (isCorrect) classNames += " correct";
+    if (isIncorrect) classNames += " incorrect";
+    
+    html += `
+      <div class="${classNames}" onclick="selectOption(${index}, ${currentQuestionIndex})">
+        ${option}
+      </div>
+    `;
+  });
+  
+  html += `</div>`;
+  
+  container.innerHTML = html;
+  
+  // Navigation buttons
+  document.getElementById("prev-btn").disabled = currentQuestionIndex === 0;
+  document.getElementById("submit-btn").textContent = submitted[currentQuestionIndex + 1] ? "✓ Answered" : "Submit Answer";
+  document.getElementById("submit-btn").disabled = answers[currentQuestionIndex + 1] === undefined || submitted[currentQuestionIndex + 1];
+  
+  if(currentQuestionIndex === currentQuiz.questions_list.length - 1) {
+    document.getElementById("next-btn").textContent = "Finish Quiz";
+  } else {
+    document.getElementById("next-btn").textContent = "Next →";
+  }
+}
+
+function selectOption(index, questionIndex) {
+  if(!submitted[questionIndex + 1]) {
+    answers[questionIndex + 1] = index;
+    displayQuestion();
+  }
+}
+
+function submitAnswer() {
+  submitted[currentQuestionIndex + 1] = true;
+  displayQuestion();
+}
+
+function previousQuestion() {
+  if(currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    displayQuestion();
+  }
+}
+
+function nextQuestion() {
+  if(currentQuestionIndex < currentQuiz.questions_list.length - 1) {
+    currentQuestionIndex++;
+    displayQuestion();
+  } else {
+    completeQuiz();
+  }
+}
+
+function completeQuiz() {
+  quizCompleted = true;
+  
+  // Calculate score
+  let correctCount = 0;
+  for(let i = 0; i < currentQuiz.questions_list.length; i++) {
+    if(submitted[i + 1] && answers[i + 1] == currentQuiz.questions_list[i].answer) {
+      correctCount++;
+    }
+  }
+  
+  let percentage = (correctCount / currentQuiz.questions_list.length) * 100;
+  let passingScore = 70;
+  
+  // Show results
+  document.getElementById("question-container").style.display = "none";
+  document.getElementById("navigation").style.display = "none";
+  
+  let resultsBox = document.getElementById("results-container");
+  resultsBox.classList.add("show");
+  
+  document.getElementById("final-score").textContent = correctCount + "/" + currentQuiz.questions_list.length + " (" + Math.round(percentage) + "%)";
+  
+  let resultText = document.getElementById("result-text");
+  if(percentage >= passingScore) {
+    resultText.innerHTML = `<span class="pass">🎉 Congratulations! You Passed!</span><br>Score: ${Math.round(percentage)}%`;
+  } else {
+    resultText.innerHTML = `<span class="fail">❌ You didn't pass this time</span><br>Score: ${Math.round(percentage)}%<br>Try again to improve!`;
+  }
+}
+
+function retakeQuiz() {
+  currentQuestionIndex = 0;
+  answers = {};
+  submitted = {};
+  quizCompleted = false;
+  
+  document.getElementById("question-container").style.display = "block";
+  document.getElementById("navigation").style.display = "flex";
+  document.getElementById("results-container").classList.remove("show");
+  
+  displayQuestion();
+}
+
+function goBack() {
+  window.location.href = "quiz.html";
+}
+
+window.onload = loadQuiz;
+</script>
+
+</body>
+</html>
